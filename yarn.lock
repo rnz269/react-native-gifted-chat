@@ -1333,6 +1333,11 @@
     wcwidth "^1.0.1"
     ws "^1.1.0"
 
+"@trava/react-native-keyboard-accessory-view@^2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@trava/react-native-keyboard-accessory-view/-/react-native-keyboard-accessory-view-2.5.0.tgz#520ed8530f4d46e1859067d5d851a24928086a70"
+  integrity sha512-MjRw+0eKSYUXlCSWc+ndIldznEY5E1ntK/N+UUz7HZRiGmFiLET3O2TBTWzC7V8x7YMhiIgN0/4HDDSugm0gBQ==
+
 "@types/babel__core@^7.1.0", "@types/babel__core@^7.1.7":
   version "7.1.7"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.7.tgz#1dacad8840364a57c98d0dd4855c6dd3752c6b89"

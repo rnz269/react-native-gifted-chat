@@ -16,6 +16,8 @@ import {
   ActionSheetProvider,
   ActionSheetOptions,
 } from '@expo/react-native-action-sheet'
+// RN added
+import { KeyboardAccessoryView } from '@trava/react-native-keyboard-accessory-view'
 import uuid from 'uuid'
 import { getBottomSpace } from 'react-native-iphone-x-helper'
 import dayjs from 'dayjs'
@@ -129,6 +131,11 @@ export interface GiftedChatProps<TMessage extends IMessage = IMessage> {
   /* infinite scroll up when reach the top of messages container, automatically call onLoadEarlier function if exist */
   infiniteScroll?: boolean
   timeTextStyle?: LeftRightStyle<TextStyle>
+  // RN added start: props for Keyboard Accessory View
+  tabBarHeight?: number
+  spaceBeneathTextInput?: number
+  safeAreaBottom?: number
+  // RN added end
   /* Custom action sheet */
   actionSheet?(): {
     showActionSheetWithOptions: (
@@ -644,8 +651,9 @@ class GiftedChat<TMessage extends IMessage = IMessage> extends React.Component<
       }
     }
   }
-
-  renderMessages() {
+  // RN added panHandlers argument (necessary for Keyboard Accessory View)
+  // @ts-ignore
+  renderMessages(panHandlers) {
     const { messagesContainerStyle, ...messagesContainerProps } = this.props
     const fragment = (
       <View
@@ -662,6 +670,7 @@ class GiftedChat<TMessage extends IMessage = IMessage> extends React.Component<
           messages={this.getMessages()}
           forwardRef={this._messageContainerRef}
           isTyping={this.props.isTyping}
+          panHandlers={panHandlers} // RN added
         />
         {this.renderChatFooter()}
       </View>
@@ -847,8 +856,31 @@ class GiftedChat<TMessage extends IMessage = IMessage> extends React.Component<
             ref={(component: any) => (this._actionSheetRef = component)}
           >
             <View style={styles.container} onLayout={this.onMainViewLayout}>
-              {this.renderMessages()}
-              {this.renderInputToolbar()}
+              {/* RN added start*/}
+              <KeyboardAccessoryView
+                // cb called with different *this* context, so let's ensure bound to this component by using lexical *this*
+                renderScrollable={panHandlers =>
+                  this.renderMessages(panHandlers)
+                }
+                // Since we have tab bar, safe area margin not needed (KeyAV default provides safe area)
+                contentContainerStyle={{ marginBottom: 0 }}
+                // negate space between accessory view and keyboard when keyboard is open
+                // constant 5 provides little space between keyboard and textInput
+                spaceBetweenKeyboardAndAccessoryView={
+                  -(this.props.tabBarHeight ?? 0) -
+                  (this.props.spaceBeneathTextInput ?? 0) +
+                  5
+                }
+                contentOffsetKeyboardOpened={
+                  -(this.props.tabBarHeight ?? 0) -
+                  (this.props.spaceBeneathTextInput ?? 0) +
+                  5 +
+                  (this.props.safeAreaBottom ?? 0)
+                }
+              >
+                {this.renderInputToolbar()}
+              </KeyboardAccessoryView>
+              {/* RN added end */}
             </View>
           </ActionSheetProvider>
         </Wrapper>

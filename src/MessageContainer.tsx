@@ -88,6 +88,7 @@ export interface MessageContainerProps<TMessage extends IMessage> {
   onQuickReply?(replies: Reply[]): void
   infiniteScroll?: boolean
   isLoadingEarlier?: boolean
+  panHandlers?: any // RN added
 }
 
 interface State {
@@ -430,6 +431,7 @@ export default class MessageContainer<
           onEndReached={this.onEndReached}
           onEndReachedThreshold={0.1}
           {...this.props.listViewProps}
+          {...this.props.panHandlers} // RN added
         />
       </View>
     )
